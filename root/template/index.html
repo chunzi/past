@@ -1,0 +1,52 @@
+[% USE date %]
+
+<div class="things box">
+<ul>
+<li class="header">[% date.format( today.day, "%A, %e %b %Y") %]</li>
+[% FOREACH thing = today.things %]
+<li id="thing_[% thing.id %]" class="thing">
+    <div class="view">
+    <span class="content">[% thing.content | html | html_line_break %]</span>
+    <span class="post_at">[% date.format( thing.created, '%H:%M') %]</span>
+    <span class="actions"> 
+        <a href="#" class="edit">Edit</a>&nbsp;<a href="#" class="delete">Delete</a>
+    </span>
+    </div>
+    <div class="edit hide">
+        <textarea class="autogrow" name="thing">[% thing.content %]</textarea>
+    </div>
+</li>
+[% END %]
+<li class="footer">[% today.things.size %] things</li>
+</ul>
+</div>
+
+<form id="form-posting" method="post" class="box hide">
+<textarea id="posting" class="autogrow" name="thing"></textarea>
+</form>
+
+<script>
+$j(document).bind('keyup', { combi: 'i', disableInInput:true }, function(){
+    $j('#posting').val('');
+    $j('#form-posting').show();
+    $j('#posting').focus();
+});
+$j(document).bind('keyup', 'esc', function(){
+    $j('#posting').blur();
+    $j('#form-posting').hide();
+    $j('#posting').val('');
+});
+$j('#posting').bind('keydown', 'cmd+return', function(){ 
+    $j('#form-posting').submit();
+});
+$j('textarea.autogrow').autogrow();
+$j('li.thing div.view').hover(
+    function(){ $j(this).children('span.actions').show(); },
+    function(){ $j(this).children('span.actions').hide(); }
+);
+
+$j("a.edit").click(function(){
+    $j(this).parent('li.thing').children('div.edit').show();
+});
+
+</script>
