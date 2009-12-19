@@ -33,6 +33,16 @@ sub new_thing :Path('new') {
     }
 }
 
+sub delete :Path {
+    my ( $self, $c ) = @_;
+    my $json = { ok => 0 };
+    if ( $c->req->method eq 'POST' ){
+        my $past = new Past;
+        $json->{'ok'} = 1;
+    }
+    $c->stash->{'json'} = $json;
+    $c->forward('View::JSON');
+}
 sub end : ActionClass('RenderView') {}
 
 
