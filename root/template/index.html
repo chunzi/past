@@ -1,63 +1,72 @@
-[% USE date %]
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>Past</title>
+    <link rel="stylesheet" href="/static/style.css" type="text/css" media="screen" charset="utf-8"/>
+    <script type="text/javascript" src="/static/javascript/jquery-1.3.2.min.js"></script>
+    <script type="text/javascript" src="/static/javascript/jquery.autogrow.js"></script>
+    <script type="text/javascript" src="/static/javascript/jquery.hotkeys-0.7.9.js"></script>
+    <script type="text/javascript" src="/static/javascript/jquery.editinplace.packed.js"></script>
+    <script>
+    var $j = jQuery.noConflict();
+    $j(document).ready( function(){
+        $j('textarea.autogrow').autogrow();
 
-<div class="things box">
-<ul>
-<li class="header">[% date.format( today.day, "%A, %e %b %Y") %]</li>
-[% FOREACH thing = today.things %]
-<li id="thing_[% thing.id %]" class="thing">
-    <div class="view">
-    <span class="content">[% thing.content | html | html_line_break %]</span>
-    <span class="post_at">[% date.format( thing.created, '%H:%M') %]</span>
-    <span class="actions"> 
-        <a href="#" class="edit">Edit</a>&nbsp;<a href="javascript: $j('#thing_[% thing.id %]').fadeOut("slow"); return fasle;" class="delete">Delete</a>
-    </span>
-    </div>
-    <div class="edit hide">
-        <textarea class="autogrow" name="thing">[% thing.content %]</textarea>
-    </div>
-</li>
-[% END %]
-<li class="footer">[% today.things.size %] things</li>
+        $j(document).bind('keydown', 'j', function(){
+            if ( ! cur_thing ){
+                cur_thing = 0;
+                $j('#thing_'+things[cur_thing]).addClass('cur');
+            }
+            
+        });
+        $j(document).bind('keyup', { combi: 'i', disableInInput:true }, function(){
+            $j('#new textarea').val('');
+            $j('#new').show();
+            $j('#new textarea').focus();
+        });
+        $j(document).bind('keyup', 'esc', function(){
+            $j('#new textarea').blur();
+            $j('#new').hide();
+        });
+
+        $j('#new textarea').bind('keydown', 'cmd+return', function(){ 
+            $j.post(
+                '/new',
+                { thing: $j('#new textarea').val() },
+                function(data){
+                    $j('ul.things li.thing:last').after(data);
+                    $j('#new textarea').blur();
+                    $j('#new').hide();
+                }
+            );
+        });
+
+
+    });
+    </script>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="header"><h1><a href="/">Past</a></h1></div>
+        <div id='content'>
+
+<div class="box">
+<ul class="things">
+    <li class="header">[% date.format( today.day, "%A, %e %b %Y") %]</li>
+    [% FOREACH thing = today.things %]
+        [% INCLUDE thing.html %]
+    [% END %]
+    <li class="footer">[% today.things.size %] things</li>
 </ul>
 </div>
 
-<form id="form-posting" method="post" class="box hide">
-<textarea id="posting" class="autogrow" name="thing"></textarea>
-</form>
+<div id="new" class="box hide">
+    <textarea class="autogrow"></textarea>
+</div>
 
-<script>
-
-var things = new Array;
-[% FOREACH thing = today.things %]
-things.push('[% thing.id %]');
-[% END %]
-var cur_thing = -1;
-
-$j(document).bind('keydown', 'j', function(){
-    if ( ! cur_thing ){
-        cur_thing = 0;
-        $j('#thing_'+things[cur_thing]).addClass('cur');
-    }
-    
-});
-$j(document).bind('keyup', { combi: 'i', disableInInput:true }, function(){
-    $j('#posting').val('');
-    $j('#form-posting').show();
-    $j('#posting').focus();
-});
-$j(document).bind('keyup', 'esc', function(){
-    $j('#posting').blur();
-    $j('#form-posting').hide();
-    $j('#posting').val('');
-});
-$j('#posting').bind('keydown', 'cmd+return', function(){ 
-    $j('#form-posting').submit();
-});
-$j('textarea.autogrow').autogrow();
-$j('li.thing div.view').hover(
-    function(){ $j(this).children('span.actions').show(); },
-    function(){ $j(this).children('span.actions').hide(); }
-);
-
-
-</script>
+        </div>
+        <div id="footer"></div>
+    </div>
+</body>
+</html>

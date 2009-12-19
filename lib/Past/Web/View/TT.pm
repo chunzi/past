@@ -5,8 +5,8 @@ use base 'Catalyst::View::TT';
 
 __PACKAGE__->config(
     INCLUDE_PATH       => [ Past::Web->path_to('root', 'template'), ],
-    WRAPPER            => 'wrapper.html',
     TEMPLATE_EXTENSION => '.html',
+    PRE_PROCESS        => 'pre.tt',
 ); 
 
 1;
