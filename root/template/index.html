@@ -9,35 +9,48 @@
     <script type="text/javascript" src="/static/javascript/jquery.hotkeys-0.7.9.js"></script>
     <script type="text/javascript" src="/static/javascript/jquery.json.js"></script>
     <script>
-    var $j = jQuery.noConflict();
-    $j(document).ready( function(){
-        $j('textarea.autogrow').autogrow();
+var $j = jQuery.noConflict();
+$j(document).ready( function(){
 
-        $j(document).bind('keyup', { combi: 'i', disableInInput:true }, function(){
-            $j('#new textarea').val('');
-            $j('#new').show();
-            $j('#new textarea').focus();
-        });
-        $j(document).bind('keyup', 'esc', function(){
+$j('textarea.autogrow').autogrow();
+bindkey( 'r', reload );
+bindkey( 'i', new_thing );
+bindkey( 'j', next_thing );
+bindkey( 'k', prev_thing );
+bindkey( 'd', delete_thing );
+$j('textarea').bind('keydown', 'esc', cancel );
+$j('#new textarea').bind('keydown', 'cmd+return', new_thing_submit );
+
+
+function bindkey( k,f ) {
+    $j(document).bind('keyup', { combi: k, disableInInput: true }, f );
+}
+function reload() {
+    window.location.reload();
+}
+function new_thing(){
+    $j('#new textarea').val('');
+    $j('#new').show();
+    $j('#new textarea').focus();
+}
+function new_thing_submit(){
+    $j.post(
+        '/new',
+        { thing: $j('#new textarea').val() },
+        function(json){
+            $j('ul.things li.footer').before(json);
             $j('#new textarea').blur();
             $j('#new').hide();
-        });
-
-        $j('#new textarea').bind('keydown', 'cmd+return', function(){ 
-            $j.post(
-                '/new',
-                { thing: $j('#new textarea').val() },
-                function(data){
-                    $j('ul.things li.footer').before(data);
-                    $j('#new textarea').blur();
-                    $j('#new').hide();
-                }
-            );
-        });
-
-$j(document).bind('keydown', 'j', next_thing );
-$j(document).bind('keydown', 'k', prev_thing );
-$j(document).bind('keydown', 'd', delete_thing );
+        }
+    );
+}
+function cancel(evt){
+    evt.stopPropagation( );
+    evt.preventDefault( );
+    $j('#new textarea').blur();
+    $j('#new').hide();
+    return false;
+}
 function delete_thing(){
     var cur = $j('ul.things li.thing.cur');
     if ( cur.length ){
