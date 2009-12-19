@@ -9,7 +9,7 @@
     <span class="content">[% thing.content | html | html_line_break %]</span>
     <span class="post_at">[% date.format( thing.created, '%H:%M') %]</span>
     <span class="actions"> 
-        <a href="#" class="edit">Edit</a>&nbsp;<a href="#" class="delete">Delete</a>
+        <a href="#" class="edit">Edit</a>&nbsp;<a href="javascript: $j('#thing_[% thing.id %]').fadeOut("slow"); return fasle;" class="delete">Delete</a>
     </span>
     </div>
     <div class="edit hide">
@@ -26,6 +26,20 @@
 </form>
 
 <script>
+
+var things = new Array;
+[% FOREACH thing = today.things %]
+things.push('[% thing.id %]');
+[% END %]
+var cur_thing = -1;
+
+$j(document).bind('keydown', 'j', function(){
+    if ( ! cur_thing ){
+        cur_thing = 0;
+        $j('#thing_'+things[cur_thing]).addClass('cur');
+    }
+    
+});
 $j(document).bind('keyup', { combi: 'i', disableInInput:true }, function(){
     $j('#posting').val('');
     $j('#form-posting').show();
@@ -45,8 +59,5 @@ $j('li.thing div.view').hover(
     function(){ $j(this).children('span.actions').hide(); }
 );
 
-$j("a.edit").click(function(){
-    $j(this).parent('li.thing').children('div.edit').show();
-});
 
 </script>

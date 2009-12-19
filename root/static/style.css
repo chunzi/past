@@ -75,8 +75,10 @@ li.thing .post_at {
 }
 .inputing { background: #eee; }
 
+.actions a {
+    margin-left: 3px;
+}
 .actions {
-    margin-left: 10px;
     display: none;
 }
 .actions a { 
@@ -90,3 +92,4 @@ li.thing .post_at {
 .actions a.delete:hover { 
     color: #BC0B0B;
 }
+.cur { background: yellow; }
