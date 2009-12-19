@@ -38,6 +38,8 @@ sub delete :Path {
     my $json = { ok => 0 };
     if ( $c->req->method eq 'POST' ){
         my $past = new Past;
+        my $thing = $past->get_thing( $c->req->param('tid'));
+        defined $thing and $thing->delete;
         $json->{'ok'} = 1;
     }
     $c->stash->{'json'} = $json;

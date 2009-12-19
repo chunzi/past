@@ -20,6 +20,13 @@ sub thing {
     $thing->save;
 }
 
+sub get_thing {
+    my $self = shift;
+    my $id = shift;
+    my $thing = Past::DB::Thing->new( id => $id )->load;
+    return $thing;
+}
+
 sub things_for_day {
     my $self =  shift;
     my $day = shift || 'today';
