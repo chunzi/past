@@ -28,7 +28,7 @@
                 '/new',
                 { thing: $j('#new textarea').val() },
                 function(data){
-                    $j('ul.things li.thing:last').after(data);
+                    $j('ul.things li.footer').before(data);
                     $j('#new textarea').blur();
                     $j('#new').hide();
                 }
@@ -37,7 +37,14 @@
 
 $j(document).bind('keydown', 'j', next_thing );
 $j(document).bind('keydown', 'k', prev_thing );
-
+$j(document).bind('keydown', 'd', delete_thing );
+function delete_thing(){
+    var cur = $j('ul.things li.thing.cur');
+    var next = cur.nextAll('.thing:first');
+    cur.removeClass('cur');
+    next.addClass('cur');
+    cur.slideUp('fast', function(){ $j(this).remove(); });
+}
 function next_thing(){
     var cur = $j('ul.things li.thing.cur');
     if ( cur.length == 0 ){
