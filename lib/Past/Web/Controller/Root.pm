@@ -33,7 +33,7 @@ sub new_thing :Path('new') {
     }
 }
 
-sub delete :Path {
+sub delete :Local {
     my ( $self, $c ) = @_;
     my $json = { ok => 0 };
     if ( $c->req->method eq 'POST' ){
@@ -45,6 +45,36 @@ sub delete :Path {
     $c->stash->{'json'} = $json;
     $c->forward('View::JSON');
 }
+
+sub change :Local {
+    my ( $self, $c ) = @_;
+    my $json = { ok => 0 };
+    my $past = new Past;
+    my $thing = $past->get_thing( $c->req->param('tid') );
+    if ( $c->req->method eq 'GET' ){
+        $json->{'ok'} = 1;
+        $json->{'html'} = $c->view('TT')->render($c, 'change.html', { thing => $thing });
+    }elsif ( $c->req->method eq 'POST' ){
+        $thing->content( $c->req->param('thing') );
+        $thing->save;
+        $json->{'ok'} = 1;
+        $json->{'html'} = $c->view('TT')->render($c, 'thing_inner.html', { thing => $thing });
+    }
+        $json->{'testing'} = '中文';
+        print STDERR $thing->content;
+        $json->{'raw'} = $thing->content;
+    $c->stash->{'json'} = $json;
+    $c->forward('View::JSON');
+}
+
+sub thing :Local {
+    my ( $self, $c ) = @_;
+    my $past = new Past;
+    my $thing = $past->get_thing( $c->req->param('tid') );
+    $c->stash->{'thing'} = $thing;
+    $c->stash->{'template'} = 'thing_inner.html';
+}
+
 sub end : ActionClass('RenderView') {}
 
 

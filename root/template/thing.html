@@ -1,4 +1,3 @@
 <li class="thing" tid="[% thing.id %]">
-    <span class="content">[% thing.content | html | html_line_break %]</span>
-    <span class="post_at">[% date.format( thing.created, '%H:%M') %]</span>
+    [% INCLUDE thing_inner.html %]
 </li>

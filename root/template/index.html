@@ -18,6 +18,7 @@ bindkey( 'i', new_thing );
 bindkey( 'j', next_thing );
 bindkey( 'k', prev_thing );
 bindkey( 'd', delete_thing );
+bindkey( 'c', change_thing );
 $j('#new textarea').bind('keydown', 'cmd+return', new_thing_submit );
 $j('textarea').bind('keyup', 'esc', cancel );
 
@@ -43,10 +44,47 @@ function new_thing_submit(){
         }
     );
 }
+function change_thing(){
+    var cur = $j('ul.things li.thing.cur');
+    if ( cur.length ){
+        $j.get(
+            '/change',
+            { tid: cur.attr('tid') },
+            function(json){
+                var ret = $j.evalJSON(json);
+                if ( ret.ok ){
+                    cur.html( ret.html );
+                    var textarea = cur.children('textarea'); 
+                    textarea.autogrow();
+                    textarea.focus();
+                    textarea.bind('keyup', 'esc', function(){ 
+                        $j.get(
+                            '/thing',
+                            { tid: cur.attr('tid') },
+                            function(html){
+                                cur.html(html);
+                            });
+                    });
+                    textarea.bind('keydown', 'cmd+return', function(){
+    $j.post(
+        '/change',
+        { tid: cur.attr('tid'), thing: textarea.val() },
+        function(json){
+            var ret = $j.evalJSON(json);
+            if ( ret.ok ){
+                cur.html( ret.html );
+            }
+        }
+    );
+                    } );
+                }
+            }
+        );
+    }
+}
 function cancel(){
     $j('#new textarea').blur();
     $j('#new').hide();
-    return false;
 }
 function delete_thing(){
     var cur = $j('ul.things li.thing.cur');
