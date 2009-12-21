@@ -13,6 +13,7 @@ our $VERSION = '0.01';
 
 __PACKAGE__->config( name => 'Past::Web' );
 __PACKAGE__->config({
+    'default_view' => 'TT',
     'View::JSON' => {
         expose_stash => 'json',
     },
