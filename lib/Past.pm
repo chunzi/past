@@ -27,6 +27,11 @@ sub get_thing {
     return $thing;
 }
 
+sub things_for_days {
+    my $self =  shift;
+    my $things = Past::DB::Thing::Manager->get_things();
+    return $things;
+}
 sub things_for_day {
     my $self =  shift;
     my $day = shift || 'today';

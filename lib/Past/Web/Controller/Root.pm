@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use parent 'Catalyst::Controller';
 use Past;
+use Class::Date qw / date/ ;
 
 __PACKAGE__->config->{namespace} = '';
 
@@ -33,6 +34,23 @@ sub new_thing :Path('new') {
     }
 }
 
+sub export :Local {
+    my ( $self, $c ) = @_;
+    my $past = new Past;
+    my $thing = $past->things_for_days;
+    my $out;
+    my $bydays;
+    map { 
+        my $day = date($_->created)->string; 
+        ( $day ) = split(/\s+/, $day);
+        push @{$bydays->{$day}}, $_;
+         } @$thing;
+    for my $day ( sort keys %$bydays ){
+        $out .= sprintf "\n%s:\n", $day;
+        map { $out .= sprintf "- %s\n", $_->content } @{$bydays->{$day}};
+    } 
+    $c->res->body('<pre>'.$out.'</pre>');
+}
 sub delete :Local {
     my ( $self, $c ) = @_;
     my $json = { ok => 0 };
