@@ -41,13 +41,15 @@ sub export :Local {
     my $out;
     my $bydays;
     map { 
-        my $day = date($_->created)->string; 
-        ( $day ) = split(/\s+/, $day);
-        push @{$bydays->{$day}}, $_;
+        my $string = date($_->created)->string; 
+        my ( $day, $time ) = split(/\s+/, $string);
+        $time =~ s/:\d\d$//;
+
+        push @{$bydays->{$day}}, { content => $_->content, time => $time, stamp => $_->created };
          } @$thing;
     for my $day ( sort keys %$bydays ){
         $out .= sprintf "\n%s:\n", $day;
-        map { $out .= sprintf "- %s\n", $_->content } @{$bydays->{$day}};
+        map { $out .= sprintf "- %s @%s\n", $_->{content}, $_->{time} } @{$bydays->{$day}};
     } 
     $c->res->body('<pre>'.$out.'</pre>');
 }
