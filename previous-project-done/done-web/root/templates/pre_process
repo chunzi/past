@@ -1,0 +1,4 @@
+[%
+	USE JavaScript;
+	USE Number.Format;
+%]

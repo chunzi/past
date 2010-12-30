@@ -1,0 +1,45 @@
+[% USE date %]
+<table id="table-things">
+[% tid = 0 %]
+[% FOREACH thing = things %]
+[% tid = tid + 1 %]
+<tr tid="[% tid %]">
+    <td class="spent">[% UNLESS thing.spent == 0 %][% thing.spent %][% END %]</td>
+    <td class="due">[% date.format(thing.due, '%H:%M') %]</td>
+    <td class="what">[% thing.what %]</td>
+</tr>
+<script type="text/javascript" language="javascript" charset="utf-8">
+// <![CDATA[
+    var c = 't[% tid %]';
+    [% IF thing.spent == 0 %]
+    done.bind_class_at(c, [% date.format(thing.due, '%H,%M') %]);
+    [% ELSE %]
+    done.bind_class_during(c, [% date.format(thing.start, '%H,%M') %], [% date.format(thing.due, '%H,%M') %]);
+    [% END %]
+    $j('#t td.'+c).addClass('done');
+// ]]>
+</script>
+[% END %]
+</table>
+
+
+<script type="text/javascript" language="javascript" charset="utf-8">
+// <![CDATA[
+
+$j('#table-things tr').hover(
+    function(){ 
+        $j(this).addClass('current');
+        var tid = $j(this).attr('tid');
+        $j('#t td.t'+tid).addClass('hi');
+    },
+    function(){ 
+        $j(this).removeClass('current');
+        var tid = $j(this).attr('tid');
+        $j('#t td.t'+tid).removeClass('hi');
+    }
+);
+
+$j('#t td.cur').removeClass('cur');
+done.bind_class_at('cur', [% date.format(date.now, '%H,%M'); %]);
+// ]]>
+</script>

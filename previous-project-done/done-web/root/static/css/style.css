@@ -1,0 +1,68 @@
+body { font-size: 14px; }
+#header {
+	background: url(/static/images/header-bg.png) repeat-x bottom;
+    border-bottom: solid 1px #878787;
+    font-family: Georgia,"Times New Roman","Bitstream Charter",Times,serif;
+    font-size: 14px;
+    font-style:italic;
+    padding: 3px;
+    padding-left: 6px;
+    color: #333;
+}
+#timeline { background: #d6dde5; border-right: solid 1px #8b8b8b; }
+#input { background: #fff; }
+#thing-what {
+    width: 100%;
+    padding: 5px;
+    font-size: 1.2em;
+    border: 0;
+}
+#table-things {
+    border-collapse: collapse;
+    width: 100%;
+}
+#table-things td {
+    padding: 2px;
+}
+#table-things td.spent{
+    width: 50px;
+    color: gray;
+    font-size: 0.8em;
+    font-style: italic;
+    text-align: right;
+    padding-right: 10px;
+    border-right: solid 1px #eee;
+    vertical-align: bottom;
+}
+#table-things td.due {
+    width: 30px;
+    padding-left: 7px;
+    padding-right: 5px;
+    font-family: verdana;
+    font-size: 0.8em;
+    color: gray;
+}
+#table-things td.what{
+    font-family: arial, verdana;
+    font-size: 0.9em;
+}
+#table-things tr.current {
+    background: #f5f5f5;
+}
+/* grid */
+#grid {
+    padding: 10px;
+}
+#t {
+    float: right;
+    border-collapse: collapse;
+}
+#t td {
+    width: 5px;
+    height: 8px;
+    background: #eee;
+    border: solid 1px #fff;
+}
+#t td.done { background: #c2d9cd; }
+#t td.hi { background: #e3e0c1; }
+#t td.cur { background: lightpink; }

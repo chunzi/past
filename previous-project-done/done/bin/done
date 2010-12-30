@@ -1,0 +1,23 @@
+#!/usr/bin/env perl
+use lib '/Users/chunzi/done/lib';
+use strict;
+use Getopt::Long;
+use done;
+
+my $done = new done;
+
+my $string = $ARGV[0];
+#die "what you've done?\n" unless defined $string;
+if ( $string ){
+my $thing = $done->parse( $string );
+$done->save( $thing );
+
+use Data::Dumper;
+print Dumper($thing); 
+}
+
+my $things = $done->things_of_day;
+map {
+    printf "- %s (%s)\n", $_->{'what'}, $_->{'spent'};
+    #print Dumper($_);
+} @$things;
